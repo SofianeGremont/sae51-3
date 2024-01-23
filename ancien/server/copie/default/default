@@ -1,0 +1,30 @@
+server {
+    listen 443 ssl;
+    server_name 192.168.0.2;
+
+    ssl_certificate /etc/nginx/ssl/example.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.key;
+
+    server_tokens off;
+
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Strict-Transport-Security "max-age=31536000" always;
+    add_header X-Content-Type-Options "nosniff" always;
+
+    proxy_hide_header X-Powered-By;
+
+    add_header Referrer-Policy "origin-when-cross-origin" always;
+    add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
+    add_header X-XSS-Protection "1; mode=block";
+
+    client_body_buffer_size 1k;
+    client_max_body_size 1k;
+    location / {
+        root /var/www/html;
+        index index.html;
+        try_files $uri $uri/ =404;
+        limit_except GET HEAD POST {
+            deny all;
+        }
+    }
+}

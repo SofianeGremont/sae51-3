@@ -1,0 +1,18 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/bullseye64"
+  config.vm.hostname = "server"
+  config.vm.network :private_network, ip: "192.168.0.2"
+  config.vm.network :private_network, ip: "10.0.1.2"
+
+  config.vm.provision "shell", inline: <<-SHELL
+    sudo apt update
+    sudo apt-get install -y nginx nginx-extras ufw curl
+  SHELL
+
+  # Ajout de la ligne suivante pour partager le répertoire contenant le fichier HTML
+  config.vm.synced_folder "C:/Users/sofia/sae51-3/server/web", "/var/www/html"
+
+  #config.vm.synced_folder "C:/Users/sofia/sae51-3/server/copie/default", "/etc/nginx/sites-available"
+
+  config.vm.synced_folder "C:/Users/sofia/sae51-3/server/copie/test", "/home/vagrant/test"
+end
